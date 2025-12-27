@@ -81,43 +81,43 @@ const JokeCard: React.FC = () => {
         }}
         className="w-full relative transition-transform duration-300 preserve-3d"
       >
-        <Card className="relative border border-white/10 bg-white/[0.01] backdrop-blur-[40px] sm:backdrop-blur-[80px] shadow-[0_0_50px_rgba(0,0,0,0.5)] sm:shadow-[0_0_80px_rgba(0,0,0,0.8)] rounded-[1.5rem] sm:rounded-[2.5rem] overflow-hidden group">
+        <Card className="relative border border-white/20 bg-white/[0.03] backdrop-blur-[40px] sm:backdrop-blur-[80px] shadow-[0_0_50px_rgba(0,0,0,0.5)] sm:shadow-[0_0_80px_rgba(0,0,0,0.8)] rounded-[2rem] sm:rounded-[3rem] overflow-hidden group">
           {!isMobile && (
             <div 
               className="pointer-events-none absolute -inset-px z-30 transition-opacity duration-500 opacity-0 group-hover:opacity-100"
               style={{
-                background: `radial-gradient(350px circle at ${glowPosition.x}px ${glowPosition.y}px, rgba(255,255,255,0.06), transparent 40%)`,
+                background: `radial-gradient(350px circle at ${glowPosition.x}px ${glowPosition.y}px, rgba(255,255,255,0.1), transparent 40%)`,
               }}
             />
           )}
           
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-40 z-0" />
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-transparent opacity-40 z-0" />
           
-          <CardHeader className="relative flex flex-row items-center justify-between p-6 sm:p-8 pb-0 z-10">
+          <CardHeader className="relative flex flex-row items-center justify-between p-7 sm:p-10 pb-0 z-10">
             <div className="flex items-center space-x-2 sm:space-x-3">
-              <div className="h-1.5 w-1.5 bg-primary rounded-full animate-pulse" />
+              <div className="h-2 w-2 bg-primary rounded-full animate-pulse shadow-[0_0_8px_rgba(180,160,255,1)]" />
               <div className="flex flex-col">
-                <span className="text-white/20 text-[7px] sm:text-[9px] font-black uppercase tracking-[0.3em]">Entry_{joke?.id || "0000"}</span>
+                <span className="text-white/60 text-[8px] sm:text-[10px] font-black uppercase tracking-[0.3em]">Entry_{joke?.id || "0000"}</span>
               </div>
             </div>
-            <div className="flex items-center space-x-1.5 sm:space-x-2">
+            <div className="flex items-center space-x-2 sm:space-x-3">
               <button 
                 onClick={handleShare}
-                className="p-2 sm:p-3 rounded-lg sm:rounded-xl bg-white/5 text-white/30 hover:text-white transition-all active:scale-90"
+                className="p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl bg-white/10 text-white/60 hover:text-white transition-all active:scale-90 border border-white/5"
               >
-                {copied ? <Check className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-green-400" /> : <Share2 className="h-3.5 w-3.5 sm:h-4 sm:w-4" />}
+                {copied ? <Check className="h-4 w-4 sm:h-5 sm:w-5 text-green-400" /> : <Share2 className="h-4 w-4 sm:h-5 sm:w-5" />}
               </button>
               {joke && (
                 <button 
                   onClick={(e) => { e.stopPropagation(); toggleFavorite(joke); }}
-                  className="p-2 sm:p-3 rounded-lg sm:rounded-xl bg-white/5 transition-all active:scale-90"
+                  className="p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl bg-white/10 transition-all active:scale-90 border border-white/5"
                 >
                   <Heart 
                     className={cn(
-                      "h-3.5 w-3.5 sm:h-4 sm:w-4 transition-all",
+                      "h-4 w-4 sm:h-5 sm:w-5 transition-all duration-500",
                       currentJokeIsFavorite 
-                        ? "fill-primary text-primary drop-shadow-[0_0_8px_rgba(180,160,255,0.6)]" 
-                        : "text-white/20 hover:text-white/50"
+                        ? "fill-primary text-primary drop-shadow-[0_0_12px_rgba(180,160,255,1)]" 
+                        : "text-white/60 hover:text-white"
                     )} 
                   />
                 </button>
@@ -125,19 +125,19 @@ const JokeCard: React.FC = () => {
             </div>
           </CardHeader>
           
-          <CardContent className="relative min-h-[180px] sm:min-h-[260px] flex flex-col justify-center px-6 sm:px-12 py-6 sm:py-8 z-10">
+          <CardContent className="relative min-h-[200px] sm:min-h-[280px] flex flex-col justify-center px-8 sm:px-14 py-8 sm:py-10 z-10">
             {isLoading || isFetching ? (
               <div className="space-y-4 sm:space-y-6">
-                <div className="h-5 sm:h-8 w-3/4 bg-white/5 rounded-full shimmer" />
-                <div className="h-8 sm:h-12 w-full bg-white/5 rounded-xl shimmer" />
+                <div className="h-6 sm:h-9 w-3/4 bg-white/10 rounded-full shimmer" />
+                <div className="h-10 sm:h-14 w-full bg-white/10 rounded-2xl shimmer" />
               </div>
             ) : joke ? (
-              <div className="space-y-6 sm:space-y-10">
-                <h2 className="text-lg sm:text-2xl lg:text-3xl font-semibold leading-snug tracking-tight text-white/90">
+              <div className="space-y-8 sm:space-y-12">
+                <h2 className="text-xl sm:text-3xl lg:text-4xl font-bold leading-tight tracking-tight text-white">
                   {joke.setup}
                 </h2>
                 <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-                  <p className="text-2xl sm:text-4xl lg:text-5xl font-black bg-clip-text text-transparent bg-gradient-to-r from-white via-primary to-white/20 leading-tight tracking-tighter">
+                  <p className="text-3xl sm:text-5xl lg:text-6xl font-black bg-clip-text text-transparent bg-gradient-to-r from-white via-primary to-white leading-tight tracking-tighter">
                     {joke.punchline}
                   </p>
                 </div>
@@ -145,13 +145,13 @@ const JokeCard: React.FC = () => {
             ) : null}
           </CardContent>
 
-          <CardFooter className="relative p-6 sm:p-8 pt-0 z-10">
+          <CardFooter className="relative p-7 sm:p-10 pt-0 z-10">
             <Button 
               onClick={handleFetchNewJoke} 
               disabled={isFetching}
-              className="w-full h-12 sm:h-16 rounded-xl sm:rounded-2xl bg-white text-black hover:bg-white/90 font-black text-[10px] sm:text-xs uppercase tracking-[0.2em] transition-all active:scale-[0.97] shadow-lg"
+              className="w-full h-14 sm:h-20 rounded-2xl sm:rounded-3xl bg-white text-black hover:bg-white/90 font-black text-[11px] sm:text-[13px] uppercase tracking-[0.25em] transition-all active:scale-[0.97] shadow-xl"
             >
-              {isFetching ? <Loader2 className="h-4 w-4 animate-spin" /> : "Discover Next"}
+              {isFetching ? <Loader2 className="h-5 w-5 animate-spin" /> : "Discover Next"}
             </Button>
           </CardFooter>
         </Card>
