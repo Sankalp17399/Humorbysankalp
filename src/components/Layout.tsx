@@ -8,9 +8,16 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   return (
-    <div className="min-h-screen flex flex-col bg-background">
+    <div className="min-h-screen flex flex-col relative">
+      {/* Aura System */}
+      <div className="aura-container">
+        <div className="aura aura-1" />
+        <div className="aura aura-2" />
+        <div className="aura aura-3" />
+      </div>
+      
       <Header />
-      <main className="flex-grow container mx-auto p-4 sm:p-6 lg:p-8">
+      <main className="flex-grow container mx-auto px-6 py-12 flex flex-col items-center">
         {children}
       </main>
       <MadeWithDyad />

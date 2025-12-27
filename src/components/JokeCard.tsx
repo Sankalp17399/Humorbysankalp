@@ -2,7 +2,7 @@ import * as React from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Loader2, Sparkles, Heart, Share2, Check } from "lucide-react";
+import { Loader2, Sparkles, Heart, Share2, Check, BarChart2 } from "lucide-react";
 import { getJoke, Joke, JokeCategory } from "@/lib/joke-api";
 import { showSuccess, showError } from "@/utils/toast";
 import { useFavorites } from "@/hooks/use-favorites";
@@ -11,6 +11,7 @@ import { cn } from "@/lib/utils";
 const JokeCard: React.FC = () => {
   const [category, setCategory] = React.useState<JokeCategory>("random");
   const [copied, setCopied] = React.useState(false);
+  const [sessionCount, setSessionCount] = React.useState(0);
 
   const { data: joke, isLoading, isFetching, error, refetch } = useQuery<Joke, Error>({
     queryKey: ["joke", category],
@@ -21,8 +22,9 @@ const JokeCard: React.FC = () => {
 
   const { isFavorite, toggleFavorite } = useFavorites();
   
-  const handleFetchNewJoke = () => {
-    refetch();
+  const handleFetchNewJoke = async () => {
+    const { isSuccess } = await refetch();
+    if (isSuccess) setSessionCount(prev => prev + 1);
   };
 
   const handleShare = async () => {
@@ -48,51 +50,46 @@ const JokeCard: React.FC = () => {
   ];
 
   return (
-    <div className="w-full max-w-2xl space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-1000">
-      {/* Category Tabs */}
-      <div className="flex flex-wrap justify-center gap-2">
-        {categories.map((cat) => (
-          <button
-            key={cat.value}
-            onClick={() => setCategory(cat.value)}
-            className={cn(
-              "px-4 py-2 rounded-full text-xs font-bold uppercase tracking-widest transition-all duration-300 border",
-              category === cat.value
-                ? "bg-white/10 border-white/20 text-white"
-                : "bg-transparent border-transparent text-white/40 hover:text-white/60 hover:border-white/5"
-            )}
-          >
-            {cat.label}
-          </button>
-        ))}
+    <div className="w-full max-w-2xl space-y-12 animate-in fade-in zoom-in-95 duration-1000">
+      {/* Session Insights */}
+      <div className="flex justify-center">
+        <div className="flex items-center space-x-6 px-6 py-2 rounded-full border border-white/5 bg-white/[0.02] backdrop-blur-md">
+           <div className="flex items-center space-x-2">
+            <BarChart2 className="h-3.5 w-3.5 text-primary/60" />
+            <span className="text-[10px] font-bold uppercase tracking-widest text-white/40">Session Insight</span>
+          </div>
+          <div className="h-3 w-px bg-white/10" />
+          <span className="text-[10px] font-bold uppercase tracking-widest text-primary">{sessionCount} Moments Found</span>
+        </div>
       </div>
 
-      <Card className="relative border border-white/5 bg-white/[0.02] backdrop-blur-3xl shadow-none rounded-[2.5rem] overflow-hidden group">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+      <Card className="relative border border-white/10 bg-white/[0.01] backdrop-blur-[40px] shadow-[0_0_100px_rgba(0,0,0,0.5)] rounded-[3rem] overflow-hidden group">
+        {/* Glow Follow Effect Simulation */}
+        <div className="absolute -inset-24 bg-primary/10 blur-[100px] opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
         
-        <CardHeader className="flex flex-row items-center justify-between p-10 pb-0 z-10">
-          <div className="flex items-center space-x-3 text-primary/40 text-[10px] font-black uppercase tracking-[0.2em]">
+        <CardHeader className="relative flex flex-row items-center justify-between p-12 pb-0 z-10">
+          <div className="flex items-center space-x-3 text-white/40 text-[10px] font-black uppercase tracking-[0.3em]">
             <Sparkles className="h-4 w-4" />
-            <span>Discover Humor</span>
+            <span>Discover Humour</span>
           </div>
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-3">
             <button 
               onClick={handleShare}
-              className="p-3 rounded-2xl bg-white/5 text-white/40 hover:text-white hover:bg-white/10 transition-all active:scale-90"
+              className="p-3.5 rounded-2xl bg-white/5 text-white/30 hover:text-white hover:bg-white/10 transition-all active:scale-90"
             >
               {copied ? <Check className="h-4 w-4 text-green-400" /> : <Share2 className="h-4 w-4" />}
             </button>
             {joke && (
               <button 
                 onClick={(e) => { e.stopPropagation(); toggleFavorite(joke); }}
-                className="p-3 rounded-2xl bg-white/5 transition-all active:scale-90 group/heart"
+                className="p-3.5 rounded-2xl bg-white/5 transition-all active:scale-90"
               >
                 <Heart 
                   className={cn(
-                    "h-4 w-4 transition-all duration-500",
+                    "h-4 w-4 transition-all duration-700",
                     currentJokeIsFavorite 
-                      ? "fill-primary text-primary scale-110" 
-                      : "text-white/20 group-hover/heart:text-white/40"
+                      ? "fill-primary text-primary drop-shadow-[0_0_8px_rgba(180,160,255,0.5)]" 
+                      : "text-white/20 hover:text-white/50"
                   )} 
                 />
               </button>
@@ -100,21 +97,21 @@ const JokeCard: React.FC = () => {
           </div>
         </CardHeader>
         
-        <CardContent className="min-h-[300px] flex flex-col justify-center px-12 py-8 z-10">
+        <CardContent className="relative min-h-[340px] flex flex-col justify-center px-14 py-10 z-10">
           {isLoading || isFetching ? (
-            <div className="flex flex-col items-center space-y-4 animate-pulse">
-              <div className="h-2 w-24 bg-white/5 rounded-full" />
-              <div className="h-8 w-full max-w-xs bg-white/5 rounded-2xl" />
+            <div className="space-y-6">
+              <div className="h-8 w-3/4 bg-white/5 rounded-full shimmer" />
+              <div className="h-12 w-full bg-white/5 rounded-2xl shimmer" />
             </div>
           ) : error ? (
-            <p className="text-center text-white/20 italic">The humor seems to be offline.</p>
+            <p className="text-center text-white/20 text-sm font-medium tracking-tight italic">Deep space silence...</p>
           ) : joke ? (
-            <div className="space-y-12">
-              <h2 className="text-2xl sm:text-3xl font-medium leading-[1.4] tracking-tight text-white/90">
+            <div className="space-y-14">
+              <h2 className="text-3xl sm:text-4xl font-semibold leading-[1.3] tracking-tight text-white/95">
                 {joke.setup}
               </h2>
-              <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 delay-300">
-                <p className="text-4xl sm:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-white/40 leading-[1.2]">
+              <div className="animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-200">
+                <p className="text-5xl sm:text-6xl font-black bg-clip-text text-transparent bg-gradient-to-r from-white via-primary to-white/30 leading-[1.1] tracking-tighter">
                   {joke.punchline}
                 </p>
               </div>
@@ -122,18 +119,38 @@ const JokeCard: React.FC = () => {
           ) : null}
         </CardContent>
 
-        <CardFooter className="p-10 pt-0 z-10">
-          <Button 
-            onClick={handleFetchNewJoke} 
-            disabled={isFetching}
-            className="w-full h-16 rounded-[1.5rem] bg-white text-black hover:bg-white/90 font-black text-sm uppercase tracking-widest transition-all active:scale-[0.98] disabled:opacity-20 shadow-[0_0_40px_rgba(255,255,255,0.1)]"
-          >
-            {isFetching ? (
-              <Loader2 className="h-5 w-5 animate-spin" />
-            ) : (
-              "Next Entry"
-            )}
-          </Button>
+        <CardFooter className="relative p-12 pt-0 z-10">
+          <div className="w-full flex flex-col space-y-8">
+            <Button 
+              onClick={handleFetchNewJoke} 
+              disabled={isFetching}
+              className="w-full h-20 rounded-[2rem] bg-white text-black hover:bg-white/90 font-black text-sm uppercase tracking-[0.2em] transition-all active:scale-[0.97] disabled:opacity-20 shadow-[0_20px_40px_rgba(0,0,0,0.4)]"
+            >
+              {isFetching ? (
+                <Loader2 className="h-5 w-5 animate-spin" />
+              ) : (
+                "Next Moment"
+              )}
+            </Button>
+
+            {/* Sub-navigation for categories */}
+            <div className="flex flex-wrap justify-center gap-3">
+              {categories.map((cat) => (
+                <button
+                  key={cat.value}
+                  onClick={() => setCategory(cat.value)}
+                  className={cn(
+                    "px-5 py-2.5 rounded-full text-[9px] font-black uppercase tracking-widest transition-all duration-500",
+                    category === cat.value
+                      ? "bg-primary text-black"
+                      : "bg-white/5 text-white/30 hover:text-white/60 hover:bg-white/10"
+                  )}
+                >
+                  {cat.label}
+                </button>
+              ))}
+            </div>
+          </div>
         </CardFooter>
       </Card>
     </div>
