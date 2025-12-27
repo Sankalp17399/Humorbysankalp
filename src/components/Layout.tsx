@@ -9,7 +9,7 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   return (
-    <div className="min-h-screen flex flex-col relative pb-32">
+    <div className="h-[100dvh] w-full flex flex-col relative overflow-hidden bg-black">
       {/* Aura System */}
       <div className="aura-container">
         <div className="aura aura-1" />
@@ -18,11 +18,20 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       </div>
       
       <Header />
-      <main className="flex-grow container mx-auto px-4 py-8 flex flex-col items-center">
-        {children}
+      
+      {/* Scrollable Content Area */}
+      <main className="flex-grow overflow-y-auto overflow-x-hidden relative custom-scrollbar">
+        <div className="container mx-auto px-4 py-6 flex flex-col items-center min-h-full">
+          {children}
+          {/* Spacer for bottom UI */}
+          <div className="h-40 w-full shrink-0" />
+        </div>
       </main>
-      <BottomNav />
-      <MadeWithDyad />
+
+      <div className="fixed bottom-0 left-0 right-0 z-50 pointer-events-none">
+        <MadeWithDyad />
+        <BottomNav />
+      </div>
     </div>
   );
 };

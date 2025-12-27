@@ -69,7 +69,7 @@ const JokeCard: React.FC = () => {
 
   return (
     <div 
-      className="w-full max-w-xl px-4 py-2 sm:py-6 flex justify-center perspective-[1200px]"
+      className="w-full max-w-xl px-4 flex flex-col items-center justify-center flex-grow perspective-[1200px]"
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
     >
@@ -93,7 +93,7 @@ const JokeCard: React.FC = () => {
           
           <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-transparent opacity-40 z-0" />
           
-          <CardHeader className="relative flex flex-row items-center justify-between p-7 sm:p-10 pb-0 z-10">
+          <CardHeader className="relative flex flex-row items-center justify-between p-6 sm:p-10 pb-0 z-10">
             <div className="flex items-center space-x-2 sm:space-x-3">
               <div className="h-2 w-2 bg-primary rounded-full animate-pulse shadow-[0_0_8px_rgba(180,160,255,1)]" />
               <div className="flex flex-col">
@@ -125,19 +125,19 @@ const JokeCard: React.FC = () => {
             </div>
           </CardHeader>
           
-          <CardContent className="relative min-h-[200px] sm:min-h-[280px] flex flex-col justify-center px-8 sm:px-14 py-8 sm:py-10 z-10">
+          <CardContent className="relative min-h-[160px] sm:min-h-[220px] flex flex-col justify-center px-8 sm:px-14 py-6 sm:py-8 z-10">
             {isLoading || isFetching ? (
               <div className="space-y-4 sm:space-y-6">
                 <div className="h-6 sm:h-9 w-3/4 bg-white/10 rounded-full shimmer" />
                 <div className="h-10 sm:h-14 w-full bg-white/10 rounded-2xl shimmer" />
               </div>
             ) : joke ? (
-              <div className="space-y-8 sm:space-y-12">
-                <h2 className="text-xl sm:text-3xl lg:text-4xl font-bold leading-tight tracking-tight text-white">
+              <div className="space-y-6 sm:space-y-10">
+                <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold leading-tight tracking-tight text-white">
                   {joke.setup}
                 </h2>
                 <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-                  <p className="text-3xl sm:text-5xl lg:text-6xl font-black bg-clip-text text-transparent bg-gradient-to-r from-white via-primary to-white leading-tight tracking-tighter">
+                  <p className="text-3xl sm:text-4xl lg:text-5xl font-black bg-clip-text text-transparent bg-gradient-to-r from-white via-primary to-white leading-tight tracking-tighter">
                     {joke.punchline}
                   </p>
                 </div>
@@ -145,11 +145,11 @@ const JokeCard: React.FC = () => {
             ) : null}
           </CardContent>
 
-          <CardFooter className="relative p-7 sm:p-10 pt-0 z-10">
+          <CardFooter className="relative p-6 sm:p-10 pt-0 z-10">
             <Button 
               onClick={handleFetchNewJoke} 
               disabled={isFetching}
-              className="w-full h-14 sm:h-20 rounded-2xl sm:rounded-3xl bg-white text-black hover:bg-white/90 font-black text-[11px] sm:text-[13px] uppercase tracking-[0.25em] transition-all active:scale-[0.97] shadow-xl"
+              className="w-full h-14 sm:h-16 rounded-2xl bg-white text-black hover:bg-white/90 font-black text-[11px] sm:text-[13px] uppercase tracking-[0.25em] transition-all active:scale-[0.97] shadow-xl"
             >
               {isFetching ? <Loader2 className="h-5 w-5 animate-spin" /> : "Discover Next"}
             </Button>
