@@ -14,8 +14,6 @@ const JokeCard: React.FC = () => {
   const { data: joke, isLoading, isFetching, error, refetch } = useQuery<Joke, Error>({
     queryKey: JOKE_QUERY_KEY,
     queryFn: getRandomJoke,
-    // We set staleTime to infinity so react-query doesn't refetch automatically, 
-    // allowing the user to control when a new joke is fetched via the button.
     staleTime: Infinity, 
     refetchOnWindowFocus: false,
   });
@@ -23,7 +21,6 @@ const JokeCard: React.FC = () => {
   const { isFavorite, toggleFavorite } = useFavorites();
   
   const handleFetchNewJoke = async () => {
-    // refetch returns a promise that resolves with the query result object
     const result = await refetch();
     
     if (result.isError) {
@@ -40,14 +37,14 @@ const JokeCard: React.FC = () => {
     }
   };
 
-  // Determine if we are loading for the very first time (no joke data yet)
   const initialLoading = isLoading && !joke;
   const currentJokeIsFavorite = joke ? isFavorite(joke.id) : false;
 
   return (
-    <Card className="w-full max-w-lg mx-auto shadow-xl border-t-4 border-primary transition-all duration-300 hover:shadow-2xl">
-      <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-4">
-        <CardTitle className="text-3xl font-extrabold tracking-tight pt-1">
+    <Card className="w-full max-w-lg mx-auto shadow-2xl dark:shadow-primary/30 border-t-8 border-primary transition-all duration-500 hover:shadow-primary/50 dark:hover:shadow-primary/70 rounded-xl overflow-hidden">
+      <CardHeader className="flex flex-row items-start justify-between space-y-0 p-6 bg-primary/10 dark:bg-primary/20">
+        <CardTitle className="text-3xl font-extrabold tracking-tight text-primary flex items-center">
+          <Smile className="h-8 w-8 mr-3 text-primary animate-pop" />
           Joke Generator
         </CardTitle>
         <div className="flex items-center space-x-2">
@@ -57,59 +54,67 @@ const JokeCard: React.FC = () => {
               size="icon" 
               onClick={handleToggleFavorite}
               aria-label={currentJokeIsFavorite ? "Remove from favorites" : "Add to favorites"}
+              className="hover:bg-transparent"
             >
               <Heart 
                 className={cn(
-                  "h-6 w-6 transition-colors",
-                  currentJokeIsFavorite ? "fill-red-500 text-red-500" : "text-muted-foreground hover:text-red-500 hover:fill-red-500/50"
+                  "h-7 w-7 transition-all duration-300",
+                  currentJokeIsFavorite 
+                    ? "fill-red-500 text-red-500 animate-heart-beat" 
+                    : "text-muted-foreground hover:text-red-500 hover:fill-red-500/50"
                 )} 
               />
             </Button>
           )}
-          <Smile className="h-8 w-8 text-primary" />
         </div>
       </CardHeader>
-      <CardContent className="min-h-[150px] flex flex-col justify-center">
+      <CardContent className="min-h-[200px] flex flex-col justify-center p-8">
         {initialLoading ? (
           <div className="flex flex-col items-center justify-center h-full p-8">
-            <Loader2 className="h-10 w-10 animate-spin text-primary mb-4" />
-            <p className="text-lg text-muted-foreground">Preparing the punchline...</p>
+            <Loader2 className="h-12 w-12 animate-spin text-primary mb-4" />
+            <p className="text-xl text-muted-foreground font-semibold">Preparing the punchline...</p>
           </div>
         ) : error ? (
           <div className="text-center p-4">
-            <p className="text-red-500 font-medium">
-              Error: {error.message}. Please try again.
+            <p className="text-red-500 font-bold text-lg">
+              Connection Error: {error.message}.
+            </p>
+            <p className="text-sm text-muted-foreground mt-2">
+              Please try fetching a new joke.
             </p>
           </div>
         ) : joke ? (
-          <div className="space-y-6 p-4">
-            <p className="text-xl font-medium text-gray-700 dark:text-gray-300 leading-relaxed">
-              {joke.setup}
+          <div className="space-y-8">
+            <p className="text-2xl font-medium text-foreground leading-relaxed italic">
+              "{joke.setup}"
             </p>
-            <div className="border-l-4 border-primary pl-4 pt-2">
-                <p className="text-2xl font-bold text-foreground">
+            <div className="border-l-4 border-accent pl-6 pt-2 bg-accent/10 p-4 rounded-r-lg shadow-inner">
+                <p className="text-3xl font-extrabold text-primary animate-pop">
                   {joke.punchline}
                 </p>
             </div>
           </div>
         ) : (
           <div className="text-center p-4">
-            <p className="text-lg text-muted-foreground">
+            <p className="text-xl text-muted-foreground font-semibold">
+              Ready for a laugh?
+            </p>
+            <p className="text-md text-muted-foreground mt-2">
               Click the button below to load your first joke!
             </p>
           </div>
         )}
       </CardContent>
-      <CardFooter className="pt-4">
+      <CardFooter className="p-6 pt-0">
         <Button 
           onClick={handleFetchNewJoke} 
-          className="w-full text-lg py-6 transition-transform duration-200 hover:scale-[1.01]"
+          className="w-full text-xl py-7 font-bold shadow-lg shadow-primary/30 transition-all duration-300 hover:scale-[1.02] hover:shadow-primary/50"
           disabled={isFetching}
         >
           {isFetching ? (
             <>
-              <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-              Loading...
+              <Loader2 className="mr-2 h-6 w-6 animate-spin" />
+              Fetching Laughs...
             </>
           ) : (
             "Get a New Joke"
