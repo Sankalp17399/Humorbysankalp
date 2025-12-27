@@ -5,14 +5,20 @@ export interface Joke {
   punchline: string;
 }
 
-const JOKE_API_URL = "https://official-joke-api.appspot.com/random_joke";
+const BASE_URL = "https://official-joke-api.appspot.com";
+
+export type JokeCategory = "general" | "programming" | "knock-knock" | "random";
 
 /**
- * Fetches a random joke from the Official Joke API.
- * @returns A promise that resolves to a Joke object.
+ * Fetches a joke from the Official Joke API.
+ * @param category - The type of joke to fetch.
  */
-export async function getRandomJoke(): Promise<Joke> {
-  const response = await fetch(JOKE_API_URL);
+export async function getJoke(category: JokeCategory = "random"): Promise<Joke> {
+  const endpoint = category === "random" 
+    ? `${BASE_URL}/random_joke` 
+    : `${BASE_URL}/jokes/${category}/random`;
+
+  const response = await fetch(endpoint);
   
   if (!response.ok) {
     throw new Error(`HTTP error! status: ${response.status}`);
@@ -20,10 +26,12 @@ export async function getRandomJoke(): Promise<Joke> {
   
   const data = await response.json();
   
-  // Basic runtime check for expected fields
-  if (typeof data.setup !== 'string' || typeof data.punchline !== 'string') {
+  // API returns an array for typed requests but a single object for random_joke
+  const joke = Array.isArray(data) ? data[0] : data;
+  
+  if (!joke.setup || !joke.punchline) {
       throw new Error("Invalid joke format received from API.");
   }
   
-  return data as Joke;
+  return joke as Joke;
 }
