@@ -27,8 +27,8 @@ const Header: React.FC = () => {
         </Link>
 
         <div className="flex items-center">
-          <div className="px-3 py-1.5 rounded-full bg-white/5 border border-white/10">
-            <span className="text-[7px] font-black uppercase tracking-[0.3em] text-white/30">Node_8821-X</span>
+          <div className="px-3 py-1.5 rounded-full bg-primary/5 border border-primary/20">
+            <span className="text-[7px] font-black uppercase tracking-[0.3em] text-primary/60">Live Feed</span>
           </div>
         </div>
       </div>

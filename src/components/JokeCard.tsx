@@ -58,7 +58,7 @@ const JokeCard: React.FC = () => {
     try {
       await navigator.clipboard.writeText(text);
       setCopied(true);
-      showSuccess("Copied to clipboard");
+      showSuccess("Joke copied to clipboard!");
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
       showError("Failed to copy");
@@ -79,9 +79,20 @@ const JokeCard: React.FC = () => {
           transform: isMobile ? 'none' : `rotateX(${rotation.x}deg) rotateY(${rotation.y}deg)`,
           transition: isFetching ? 'none' : 'transform 0.2s ease-out'
         }}
-        className="w-full relative transition-transform duration-300 preserve-3d"
+        className={cn(
+          "w-full relative transition-transform duration-300 preserve-3d",
+          isMobile && "animate-[float_6s_ease-in-out_infinite]"
+        )}
       >
-        <Card className="relative border border-white/20 bg-white/[0.03] backdrop-blur-[40px] sm:backdrop-blur-[80px] shadow-[0_0_50px_rgba(0,0,0,0.5)] sm:shadow-[0_0_80px_rgba(0,0,0,0.8)] rounded-[2rem] sm:rounded-[3rem] overflow-hidden group">
+        <Card className={cn(
+          "relative border border-white/20 bg-white/[0.03] backdrop-blur-[40px] sm:backdrop-blur-[80px] shadow-[0_0_50px_rgba(0,0,0,0.5)] sm:shadow-[0_0_80px_rgba(0,0,0,0.8)] rounded-[2rem] sm:rounded-[3rem] overflow-hidden group transition-colors duration-500",
+          isMobile && "border-white/30"
+        )}>
+          {/* Subtle Mobile Edge Glow */}
+          {isMobile && (
+            <div className="absolute inset-0 border-[2px] border-primary/20 rounded-[2rem] animate-pulse pointer-events-none" />
+          )}
+
           {!isMobile && (
             <div 
               className="pointer-events-none absolute -inset-px z-30 transition-opacity duration-500 opacity-0 group-hover:opacity-100"
@@ -103,9 +114,12 @@ const JokeCard: React.FC = () => {
             <div className="flex items-center space-x-2 sm:space-x-3">
               <button 
                 onClick={handleShare}
-                className="p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl bg-white/10 text-white/60 hover:text-white transition-all active:scale-90 border border-white/5"
+                className={cn(
+                  "p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl bg-white/10 transition-all active:scale-90 border border-white/5",
+                  copied ? "text-green-400 border-green-400/30 bg-green-400/10" : "text-white/60 hover:text-white"
+                )}
               >
-                {copied ? <Check className="h-4 w-4 sm:h-5 sm:w-5 text-green-400" /> : <Share2 className="h-4 w-4 sm:h-5 sm:w-5" />}
+                {copied ? <Check className="h-4 w-4 sm:h-5 sm:w-5" /> : <Share2 className="h-4 w-4 sm:h-5 sm:w-5" />}
               </button>
               {joke && (
                 <button 
@@ -116,7 +130,7 @@ const JokeCard: React.FC = () => {
                     className={cn(
                       "h-4 w-4 sm:h-5 sm:w-5 transition-all duration-500",
                       currentJokeIsFavorite 
-                        ? "fill-primary text-primary drop-shadow-[0_0_12px_rgba(180,160,255,1)]" 
+                        ? "fill-red-500 text-red-500 drop-shadow-[0_0_12px_rgba(239,68,68,0.8)]" 
                         : "text-white/60 hover:text-white"
                     )} 
                   />
