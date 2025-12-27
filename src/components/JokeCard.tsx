@@ -4,7 +4,7 @@ import * as React from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Loader2, Sparkles, Heart, Share2, Check } from "lucide-react";
+import { Loader2, Sparkles, Heart, Copy, Check } from "lucide-react";
 import { getJoke, Joke } from "@/lib/joke-api";
 import { showSuccess, showError } from "@/utils/toast";
 import { useFavorites } from "@/hooks/use-favorites";
@@ -52,7 +52,7 @@ const JokeCard: React.FC = () => {
     setRotation({ x: 0, y: 0 });
   };
 
-  const handleShare = async () => {
+  const handleCopy = async () => {
     if (!joke) return;
     const text = `${joke.setup}\n\n${joke.punchline}`;
     try {
@@ -112,18 +112,20 @@ const JokeCard: React.FC = () => {
             </div>
             <div className="flex items-center space-x-2 sm:space-x-3">
               <button 
-                onClick={handleShare}
+                onClick={handleCopy}
                 className={cn(
                   "p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl bg-white/10 transition-all active:scale-90 border border-white/5",
                   copied ? "text-green-400 border-green-400/30 bg-green-400/10" : "text-white/60 hover:text-white"
                 )}
+                aria-label="Copy joke"
               >
-                {copied ? <Check className="h-4 w-4 sm:h-5 sm:w-5" /> : <Share2 className="h-4 w-4 sm:h-5 sm:w-5" />}
+                {copied ? <Check className="h-4 w-4 sm:h-5 sm:w-5" /> : <Copy className="h-4 w-4 sm:h-5 sm:w-5" />}
               </button>
               {joke && (
                 <button 
                   onClick={(e) => { e.stopPropagation(); toggleFavorite(joke); }}
                   className="p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl bg-white/10 transition-all active:scale-90 border border-white/5"
+                  aria-label="Toggle favorite"
                 >
                   <Heart 
                     className={cn(
