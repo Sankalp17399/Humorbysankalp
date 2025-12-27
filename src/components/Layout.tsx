@@ -1,5 +1,6 @@
 import * as React from "react";
 import Header from "./Header";
+import BottomNav from "./BottomNav";
 import { MadeWithDyad } from "./made-with-dyad";
 
 interface LayoutProps {
@@ -8,7 +9,7 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   return (
-    <div className="min-h-screen flex flex-col relative">
+    <div className="min-h-screen flex flex-col relative pb-32">
       {/* Aura System */}
       <div className="aura-container">
         <div className="aura aura-1" />
@@ -17,9 +18,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       </div>
       
       <Header />
-      <main className="flex-grow container mx-auto px-6 py-12 flex flex-col items-center">
+      <main className="flex-grow container mx-auto px-4 py-8 flex flex-col items-center">
         {children}
       </main>
+      <BottomNav />
       <MadeWithDyad />
     </div>
   );
