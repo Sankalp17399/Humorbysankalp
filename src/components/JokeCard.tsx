@@ -41,8 +41,8 @@ const JokeCard: React.FC = () => {
     const centerX = rect.width / 2;
     const centerY = rect.height / 2;
     
-    const rotateX = (y - centerY) / 30;
-    const rotateY = (centerX - x) / 30;
+    const rotateX = (y - centerY) / 40;
+    const rotateY = (centerX - x) / 40;
     
     setRotation({ x: rotateX, y: rotateY });
     setGlowPosition({ x, y });
@@ -69,7 +69,7 @@ const JokeCard: React.FC = () => {
 
   return (
     <div 
-      className="w-full max-w-xl px-4 flex flex-col items-center justify-center flex-grow perspective-[1200px]"
+      className="w-full max-w-xl px-4 flex flex-col items-center justify-center flex-grow perspective-[1500px]"
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
     >
@@ -77,45 +77,38 @@ const JokeCard: React.FC = () => {
         ref={cardRef}
         style={{
           transform: isMobile ? 'none' : `rotateX(${rotation.x}deg) rotateY(${rotation.y}deg)`,
-          transition: isFetching ? 'none' : 'transform 0.2s ease-out'
+          transition: 'transform 0.3s ease-out'
         }}
-        className="w-full relative transition-transform duration-300 preserve-3d"
+        className="w-full relative preserve-3d"
       >
-        <Card className={cn(
-          "relative border border-white/20 bg-white/[0.03] backdrop-blur-[40px] sm:backdrop-blur-[80px] shadow-[0_0_50px_rgba(0,0,0,0.5)] sm:shadow-[0_0_80px_rgba(0,0,0,0.8)] rounded-[2rem] sm:rounded-[3rem] overflow-hidden group transition-colors duration-500",
-          isMobile && "border-white/30"
-        )}>
-          {/* Subtle Mobile Edge Sweep - No movement, just light */}
-          {isMobile && (
-            <div className="absolute inset-0 opacity-40 pointer-events-none overflow-hidden rounded-[2rem]">
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full animate-[shimmer_4s_infinite]" />
-            </div>
-          )}
-
+        {/* Outer Glow / Shadow */}
+        <div className="absolute -inset-2 bg-primary/10 blur-3xl opacity-20 rounded-[3rem] pointer-events-none" />
+        
+        <Card className="relative border border-white/10 bg-white/[0.02] backdrop-blur-3xl shadow-[0_0_100px_rgba(0,0,0,0.4)] rounded-[2.5rem] sm:rounded-[3.5rem] overflow-hidden group transition-all duration-700">
+          {/* Internal Glow Gradient */}
+          <div className="absolute inset-0 bg-gradient-to-br from-white/[0.05] via-transparent to-transparent opacity-50 z-0" />
+          
+          {/* Desktop Glow Tracker */}
           {!isMobile && (
             <div 
               className="pointer-events-none absolute -inset-px z-30 transition-opacity duration-500 opacity-0 group-hover:opacity-100"
               style={{
-                background: `radial-gradient(350px circle at ${glowPosition.x}px ${glowPosition.y}px, rgba(255,255,255,0.1), transparent 40%)`,
+                background: `radial-gradient(400px circle at ${glowPosition.x}px ${glowPosition.y}px, rgba(255,255,255,0.08), transparent 40%)`,
               }}
             />
           )}
           
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-transparent opacity-40 z-0" />
-          
-          <CardHeader className="relative flex flex-row items-center justify-between p-6 sm:p-10 pb-0 z-10">
-            <div className="flex items-center space-x-2 sm:space-x-3">
-              <div className="h-2 w-2 bg-primary rounded-full animate-pulse shadow-[0_0_8px_rgba(180,160,255,1)]" />
-              <div className="flex flex-col">
-                <span className="text-white/60 text-[8px] sm:text-[10px] font-black uppercase tracking-[0.3em]">Entry_{joke?.id || "0000"}</span>
-              </div>
+          <CardHeader className="relative flex flex-row items-center justify-between p-7 sm:p-12 pb-0 z-10">
+            <div className="flex items-center space-x-3">
+              <div className="h-1.5 w-1.5 bg-primary rounded-full shadow-[0_0_10px_rgba(180,160,255,1)]" />
+              <span className="text-white/40 text-[9px] font-black uppercase tracking-[0.4em]">Entry_{joke?.id || "----"}</span>
             </div>
-            <div className="flex items-center space-x-2 sm:space-x-3">
+            <div className="flex items-center space-x-3">
               <button 
                 onClick={handleCopy}
                 className={cn(
-                  "p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl bg-white/10 transition-all active:scale-90 border border-white/5",
-                  copied ? "text-green-400 border-green-400/30 bg-green-400/10" : "text-white/60 hover:text-white"
+                  "p-3 rounded-2xl bg-white/[0.05] transition-all active:scale-90 border border-white/[0.05] hover:bg-white/10",
+                  copied ? "text-green-400 border-green-400/30 bg-green-400/10" : "text-white/40 hover:text-white"
                 )}
                 aria-label="Copy joke"
               >
@@ -124,15 +117,15 @@ const JokeCard: React.FC = () => {
               {joke && (
                 <button 
                   onClick={(e) => { e.stopPropagation(); toggleFavorite(joke); }}
-                  className="p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl bg-white/10 transition-all active:scale-90 border border-white/5"
+                  className="p-3 rounded-2xl bg-white/[0.05] transition-all active:scale-90 border border-white/[0.05] hover:bg-white/10"
                   aria-label="Toggle favorite"
                 >
                   <Heart 
                     className={cn(
                       "h-4 w-4 sm:h-5 sm:w-5 transition-all duration-500",
                       currentJokeIsFavorite 
-                        ? "fill-red-500 text-red-500 drop-shadow-[0_0_12px_rgba(239,68,68,0.8)]" 
-                        : "text-white/60 hover:text-white"
+                        ? "fill-red-500 text-red-500 drop-shadow-[0_0_12px_rgba(239,68,68,0.6)]" 
+                        : "text-white/40 hover:text-white"
                     )} 
                   />
                 </button>
@@ -140,19 +133,19 @@ const JokeCard: React.FC = () => {
             </div>
           </CardHeader>
           
-          <CardContent className="relative min-h-[160px] sm:min-h-[220px] flex flex-col justify-center px-8 sm:px-14 py-6 sm:py-8 z-10">
+          <CardContent className="relative min-h-[180px] sm:min-h-[260px] flex flex-col justify-center px-10 sm:px-16 py-8 sm:py-10 z-10">
             {isLoading || isFetching ? (
-              <div className="space-y-4 sm:space-y-6">
-                <div className="h-6 sm:h-9 w-3/4 bg-white/10 rounded-full shimmer" />
-                <div className="h-10 sm:h-14 w-full bg-white/10 rounded-2xl shimmer" />
+              <div className="space-y-6">
+                <div className="h-8 w-3/4 bg-white/5 rounded-full animate-pulse" />
+                <div className="h-12 w-full bg-white/5 rounded-2xl animate-pulse" />
               </div>
             ) : joke ? (
-              <div className="space-y-6 sm:space-y-10">
-                <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold leading-tight tracking-tight text-white">
+              <div className="space-y-8 sm:space-y-12">
+                <h2 className="text-xl sm:text-3xl font-bold leading-snug tracking-tight text-white/90">
                   {joke.setup}
                 </h2>
-                <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-                  <p className="text-3xl sm:text-4xl lg:text-5xl font-black bg-clip-text text-transparent bg-gradient-to-r from-white via-primary to-white leading-tight tracking-tighter">
+                <div className="animate-in fade-in slide-in-from-bottom-6 duration-700">
+                  <p className="text-3xl sm:text-5xl font-black bg-clip-text text-transparent bg-gradient-to-r from-white via-primary/80 to-white/80 leading-[1.1] tracking-tighter">
                     {joke.punchline}
                   </p>
                 </div>
@@ -160,13 +153,13 @@ const JokeCard: React.FC = () => {
             ) : null}
           </CardContent>
 
-          <CardFooter className="relative p-6 sm:p-10 pt-0 z-10">
+          <CardFooter className="relative p-7 sm:p-12 pt-0 z-10">
             <Button 
               onClick={handleFetchNewJoke} 
               disabled={isFetching}
-              className="w-full h-14 sm:h-16 rounded-2xl bg-white text-black hover:bg-white/90 font-black text-[11px] sm:text-[13px] uppercase tracking-[0.25em] transition-all active:scale-[0.97] shadow-xl"
+              className="w-full h-16 sm:h-20 rounded-[1.5rem] bg-white text-black hover:bg-white/90 font-black text-[12px] uppercase tracking-[0.3em] transition-all active:scale-[0.98] shadow-2xl"
             >
-              {isFetching ? <Loader2 className="h-5 w-5 animate-spin" /> : "Discover Next"}
+              {isFetching ? <Loader2 className="h-6 w-6 animate-spin" /> : "Next Discovery"}
             </Button>
           </CardFooter>
         </Card>
