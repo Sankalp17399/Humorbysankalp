@@ -11,10 +11,6 @@ const Favorites: React.FC = () => {
   return (
     <div className="w-full max-w-7xl mx-auto space-y-8 sm:space-y-12 py-4 sm:py-8 animate-in fade-in duration-700">
       <div className="text-center space-y-2 sm:space-y-4">
-        <div className="flex items-center justify-center space-x-3 text-primary/60 text-[9px] sm:text-[10px] font-black uppercase tracking-[0.4em] sm:tracking-[0.6em]">
-          <Sparkles className="h-3 w-3 sm:h-4 sm:w-4" />
-          <span>Holographic Archive</span>
-        </div>
         <h1 className="text-4xl sm:text-7xl font-black tracking-tighter text-white leading-none">Archive.</h1>
         <p className="text-white/60 text-xs sm:text-lg font-medium tracking-tight">Your curated moments of discovery.</p>
       </div>
