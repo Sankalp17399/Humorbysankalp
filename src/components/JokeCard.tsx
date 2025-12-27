@@ -4,7 +4,7 @@ import * as React from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Loader2, Sparkles, Heart, Copy, Check } from "lucide-react";
+import { Loader2, Heart, Copy, Check } from "lucide-react";
 import { getJoke, Joke } from "@/lib/joke-api";
 import { showSuccess, showError } from "@/utils/toast";
 import { useFavorites } from "@/hooks/use-favorites";
@@ -14,11 +14,10 @@ import { useIsMobile } from "@/hooks/use-mobile";
 const JokeCard: React.FC = () => {
   const isMobile = useIsMobile();
   const [copied, setCopied] = React.useState(false);
-  const cardRef = React.useRef<HTMLDivElement>(null);
-  const [rotation, setRotation] = React.useState({ x: 0, y: 0 });
   const [glowPosition, setGlowPosition] = React.useState({ x: 0, y: 0 });
+  const cardRef = React.useRef<HTMLDivElement>(null);
 
-  const { data: joke, isLoading, isFetching, error, refetch } = useQuery<Joke, Error>({
+  const { data: joke, isLoading, isFetching, refetch } = useQuery<Joke, Error>({
     queryKey: ["joke", "random"],
     queryFn: () => getJoke("random"),
     staleTime: Infinity,
@@ -33,23 +32,8 @@ const JokeCard: React.FC = () => {
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (isMobile || !cardRef.current) return;
-    
     const rect = cardRef.current.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    
-    const centerX = rect.width / 2;
-    const centerY = rect.height / 2;
-    
-    const rotateX = (y - centerY) / 40;
-    const rotateY = (centerX - x) / 40;
-    
-    setRotation({ x: rotateX, y: rotateY });
-    setGlowPosition({ x, y });
-  };
-
-  const handleMouseLeave = () => {
-    setRotation({ x: 0, y: 0 });
+    setGlowPosition({ x: e.clientX - rect.left, y: e.clientY - rect.top });
   };
 
   const handleCopy = async () => {
@@ -68,27 +52,20 @@ const JokeCard: React.FC = () => {
   const currentJokeIsFavorite = joke ? isFavorite(joke.id) : false;
 
   return (
-    <div 
-      className="w-full max-w-xl px-4 flex flex-col items-center justify-center flex-grow perspective-[1500px]"
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-    >
+    <div className="w-full max-w-xl px-4 flex flex-col items-center justify-center flex-grow">
       <div
         ref={cardRef}
-        style={{
-          transform: isMobile ? 'none' : `rotateX(${rotation.x}deg) rotateY(${rotation.y}deg)`,
-          transition: 'transform 0.3s ease-out'
-        }}
-        className="w-full relative preserve-3d"
+        onMouseMove={handleMouseMove}
+        className="w-full relative group"
       >
         {/* Outer Glow / Shadow */}
         <div className="absolute -inset-2 bg-primary/10 blur-3xl opacity-20 rounded-[3rem] pointer-events-none" />
         
-        <Card className="relative border border-white/10 bg-white/[0.02] backdrop-blur-3xl shadow-[0_0_100px_rgba(0,0,0,0.4)] rounded-[2.5rem] sm:rounded-[3.5rem] overflow-hidden group transition-all duration-700">
+        <Card className="relative border border-white/10 bg-white/[0.02] backdrop-blur-3xl shadow-[0_0_100px_rgba(0,0,0,0.4)] rounded-[2.5rem] sm:rounded-[3.5rem] overflow-hidden transition-all duration-500">
           {/* Internal Glow Gradient */}
-          <div className="absolute inset-0 bg-gradient-to-br from-white/[0.05] via-transparent to-transparent opacity-50 z-0" />
+          <div className="absolute inset-0 bg-gradient-to-br from-white/[0.05] via-transparent to-transparent opacity-50 z-0 pointer-events-none" />
           
-          {/* Desktop Glow Tracker */}
+          {/* Desktop Hover Glow Tracker */}
           {!isMobile && (
             <div 
               className="pointer-events-none absolute -inset-px z-30 transition-opacity duration-500 opacity-0 group-hover:opacity-100"
@@ -107,7 +84,7 @@ const JokeCard: React.FC = () => {
               <button 
                 onClick={handleCopy}
                 className={cn(
-                  "p-3 rounded-2xl bg-white/[0.05] transition-all active:scale-90 border border-white/[0.05] hover:bg-white/10",
+                  "p-3 rounded-2xl bg-white/[0.05] transition-all active:scale-95 border border-white/[0.05] hover:bg-white/10",
                   copied ? "text-green-400 border-green-400/30 bg-green-400/10" : "text-white/40 hover:text-white"
                 )}
                 aria-label="Copy joke"
@@ -117,7 +94,7 @@ const JokeCard: React.FC = () => {
               {joke && (
                 <button 
                   onClick={(e) => { e.stopPropagation(); toggleFavorite(joke); }}
-                  className="p-3 rounded-2xl bg-white/[0.05] transition-all active:scale-90 border border-white/[0.05] hover:bg-white/10"
+                  className="p-3 rounded-2xl bg-white/[0.05] transition-all active:scale-95 border border-white/[0.05] hover:bg-white/10"
                   aria-label="Toggle favorite"
                 >
                   <Heart 
