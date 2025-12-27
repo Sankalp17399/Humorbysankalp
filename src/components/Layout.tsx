@@ -24,13 +24,18 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         <div className="container mx-auto px-4 py-6 flex flex-col items-center min-h-full">
           {children}
           {/* Spacer for bottom UI */}
-          <div className="h-40 w-full shrink-0" />
+          <div className="h-48 w-full shrink-0" />
         </div>
       </main>
 
-      <div className="fixed bottom-0 left-0 right-0 z-50 pointer-events-none">
-        <MadeWithDyad />
-        <BottomNav />
+      {/* Fixed Bottom UI Stack */}
+      <div className="fixed bottom-8 left-0 right-0 z-50 flex flex-col items-center space-y-4 pointer-events-none">
+        <div className="pointer-events-auto">
+          <MadeWithDyad />
+        </div>
+        <div className="pointer-events-auto">
+          <BottomNav />
+        </div>
       </div>
     </div>
   );
