@@ -13,7 +13,7 @@ const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <ThemeProvider defaultTheme="system" attribute="class">
+    <ThemeProvider forcedTheme="dark" attribute="class">
       <TooltipProvider>
         <Toaster />
         <Sonner />
@@ -21,7 +21,6 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Layout><Index /></Layout>} />
             <Route path="/favorites" element={<Layout><Favorites /></Layout>} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

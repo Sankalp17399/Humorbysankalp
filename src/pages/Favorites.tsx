@@ -1,58 +1,46 @@
 import * as React from "react";
 import { useFavorites } from "@/hooks/use-favorites";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Heart, Trash2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 
 const Favorites: React.FC = () => {
   const { favorites, toggleFavorite } = useFavorites();
 
   return (
-    <div className="space-y-10 py-8">
-      <h1 className="text-5xl font-extrabold tracking-tighter text-center bg-clip-text text-transparent bg-gradient-to-r from-red-500 to-pink-600">
-        <Heart className="inline h-10 w-10 mr-3 fill-red-500 text-red-500 animate-heart-beat" />
-        Your Favorite Jokes
-      </h1>
+    <div className="max-w-7xl mx-auto space-y-12 py-12">
+      <div className="text-center space-y-2">
+        <h1 className="text-5xl font-bold tracking-tight text-white">Curated Collection</h1>
+        <p className="text-muted-foreground text-lg">Your hand-picked selection of favorites.</p>
+      </div>
 
       {favorites.length === 0 ? (
-        <div className="text-center p-12 border-4 border-dashed border-muted-foreground/30 rounded-xl max-w-xl mx-auto bg-secondary/20 shadow-inner">
-          <p className="text-2xl font-semibold text-muted-foreground">
-            No favorites yet!
-          </p>
-          <p className="text-md text-muted-foreground mt-3">
-            Head back to the Jokes page and start collecting your best laughs.
-          </p>
+        <div className="flex flex-col items-center justify-center p-20 border border-white/5 bg-white/[0.02] rounded-3xl backdrop-blur-sm">
+          <Heart className="h-10 w-10 text-white/10 mb-4" />
+          <p className="text-white/40 font-medium">No saved humor yet.</p>
         </div>
       ) : (
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {favorites.map((joke) => (
             <Card 
               key={joke.id} 
-              className="flex flex-col justify-between shadow-lg hover:shadow-xl transition-all duration-300 border-l-4 border-red-500 dark:border-red-400"
+              className="border border-white/10 bg-white/[0.03] backdrop-blur-xl rounded-2xl overflow-hidden transition-all duration-500 hover:border-white/20"
             >
-              <CardHeader className="pb-2 flex flex-row items-center justify-between bg-secondary/30 dark:bg-secondary/50 p-4">
-                <CardTitle className="text-base font-bold text-foreground/70">
-                  Joke #{joke.id}
-                </CardTitle>
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
+              <CardHeader className="flex flex-row items-center justify-between p-6 pb-2">
+                <span className="text-[10px] font-black uppercase tracking-widest text-white/20">Entry #{joke.id}</span>
+                <button 
                   onClick={() => toggleFavorite(joke)}
-                  aria-label="Remove joke"
-                  className="text-destructive hover:bg-destructive/10 transition-transform hover:scale-110"
+                  className="p-2 text-white/20 hover:text-destructive transition-colors"
                 >
-                  <Trash2 className="h-5 w-5" />
-                </Button>
+                  <Trash2 className="h-4 w-4" />
+                </button>
               </CardHeader>
-              <CardContent className="space-y-4 p-4 flex-grow">
-                <p className="text-lg font-medium text-foreground leading-relaxed">
+              <CardContent className="p-6 pt-2 space-y-6">
+                <p className="text-lg font-medium text-white/80 leading-relaxed">
                   {joke.setup}
                 </p>
-                <div className="border-l-2 border-primary pl-3 pt-1">
-                    <p className="text-xl font-bold text-primary">
-                      {joke.punchline}
-                    </p>
-                </div>
+                <p className="text-xl font-bold text-primary">
+                  {joke.punchline}
+                </p>
               </CardContent>
             </Card>
           ))}

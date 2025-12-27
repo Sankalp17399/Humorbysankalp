@@ -1,8 +1,8 @@
 import * as React from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Loader2, Smile, Heart } from "lucide-react";
+import { Loader2, Sparkles, Heart } from "lucide-react";
 import { getRandomJoke, Joke } from "@/lib/joke-api";
 import { showSuccess, showError } from "@/utils/toast";
 import { useFavorites } from "@/hooks/use-favorites";
@@ -22,103 +22,72 @@ const JokeCard: React.FC = () => {
   
   const handleFetchNewJoke = async () => {
     const result = await refetch();
-    
     if (result.isError) {
-      showError("Failed to fetch a new joke. Please check your network connection.");
-    } else {
-      showSuccess("Here's a fresh one!");
+      showError("Connection lost. Try again.");
     }
   };
 
   const handleToggleFavorite = (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (joke) {
-      toggleFavorite(joke);
-    }
+    if (joke) toggleFavorite(joke);
   };
 
   const initialLoading = isLoading && !joke;
   const currentJokeIsFavorite = joke ? isFavorite(joke.id) : false;
 
   return (
-    <Card className="w-full max-w-lg mx-auto shadow-2xl dark:shadow-primary/30 border-t-8 border-primary transition-all duration-500 hover:shadow-primary/50 dark:hover:shadow-primary/70 rounded-xl overflow-hidden">
-      <CardHeader className="flex flex-row items-start justify-between space-y-0 p-6 bg-primary/10 dark:bg-primary/20">
-        <CardTitle className="text-3xl font-extrabold tracking-tight text-primary flex items-center">
-          <Smile className="h-8 w-8 mr-3 text-primary animate-pop" />
-          Joke Generator
-        </CardTitle>
-        <div className="flex items-center space-x-2">
-          {joke && (
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              onClick={handleToggleFavorite}
-              aria-label={currentJokeIsFavorite ? "Remove from favorites" : "Add to favorites"}
-              className="hover:bg-transparent"
-            >
-              <Heart 
-                className={cn(
-                  "h-7 w-7 transition-all duration-300",
-                  currentJokeIsFavorite 
-                    ? "fill-red-500 text-red-500 animate-heart-beat" 
-                    : "text-muted-foreground hover:text-red-500 hover:fill-red-500/50"
-                )} 
-              />
-            </Button>
-          )}
+    <Card className="w-full max-w-xl mx-auto border border-white/10 bg-white/[0.03] backdrop-blur-2xl shadow-none rounded-3xl overflow-hidden transition-all duration-700 hover:border-white/20">
+      <CardHeader className="flex flex-row items-center justify-between p-8 pb-0">
+        <div className="flex items-center space-x-2 text-primary/60 text-xs font-bold uppercase tracking-widest">
+          <Sparkles className="h-3 w-3" />
+          <span>Random Humor</span>
         </div>
+        {joke && (
+          <button 
+            onClick={handleToggleFavorite}
+            className="p-2 rounded-full hover:bg-white/5 transition-colors"
+          >
+            <Heart 
+              className={cn(
+                "h-5 w-5 transition-all duration-500",
+                currentJokeIsFavorite 
+                  ? "fill-primary text-primary" 
+                  : "text-white/20 hover:text-white/40"
+              )} 
+            />
+          </button>
+        )}
       </CardHeader>
-      <CardContent className="min-h-[200px] flex flex-col justify-center p-8">
+      
+      <CardContent className="min-h-[260px] flex flex-col justify-center px-10 py-6">
         {initialLoading ? (
-          <div className="flex flex-col items-center justify-center h-full p-8">
-            <Loader2 className="h-12 w-12 animate-spin text-primary mb-4" />
-            <p className="text-xl text-muted-foreground font-semibold">Preparing the punchline...</p>
+          <div className="flex items-center space-x-3 text-white/20">
+            <Loader2 className="h-5 w-5 animate-spin" />
+            <span className="text-sm font-medium tracking-tight">Curating your next laugh...</span>
           </div>
         ) : error ? (
-          <div className="text-center p-4">
-            <p className="text-red-500 font-bold text-lg">
-              Connection Error: {error.message}.
-            </p>
-            <p className="text-sm text-muted-foreground mt-2">
-              Please try fetching a new joke.
-            </p>
-          </div>
+          <p className="text-sm text-destructive/80 font-medium">Failed to fetch content. Check your connection.</p>
         ) : joke ? (
-          <div className="space-y-8">
-            <p className="text-2xl font-medium text-foreground leading-relaxed italic">
-              "{joke.setup}"
-            </p>
-            <div className="border-l-4 border-accent pl-6 pt-2 bg-accent/10 p-4 rounded-r-lg shadow-inner">
-                <p className="text-3xl font-extrabold text-primary animate-pop">
-                  {joke.punchline}
-                </p>
+          <div className="space-y-10">
+            <h2 className="text-2xl font-semibold leading-snug tracking-tight text-white/90">
+              {joke.setup}
+            </h2>
+            <div className="animate-in fade-in slide-in-from-bottom-4 duration-1000">
+              <p className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-br from-primary via-primary/80 to-white/40">
+                {joke.punchline}
+              </p>
             </div>
           </div>
-        ) : (
-          <div className="text-center p-4">
-            <p className="text-xl text-muted-foreground font-semibold">
-              Ready for a laugh?
-            </p>
-            <p className="text-md text-muted-foreground mt-2">
-              Click the button below to load your first joke!
-            </p>
-          </div>
-        )}
+        ) : null}
       </CardContent>
-      <CardFooter className="p-6 pt-0">
+
+      <CardFooter className="p-8 pt-0">
         <Button 
           onClick={handleFetchNewJoke} 
-          className="w-full text-xl py-7 font-bold shadow-lg shadow-primary/30 transition-all duration-300 hover:scale-[1.02] hover:shadow-primary/50"
           disabled={isFetching}
+          className="w-full h-14 rounded-2xl bg-white text-black hover:bg-white/90 font-bold transition-all active:scale-95 disabled:opacity-50"
         >
-          {isFetching ? (
-            <>
-              <Loader2 className="mr-2 h-6 w-6 animate-spin" />
-              Fetching Laughs...
-            </>
-          ) : (
-            "Get a New Joke"
-          )}
+          {isFetching ? "Syncing..." : "Refresh Humor"}
         </Button>
       </CardFooter>
     </Card>
