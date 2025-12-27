@@ -79,18 +79,17 @@ const JokeCard: React.FC = () => {
           transform: isMobile ? 'none' : `rotateX(${rotation.x}deg) rotateY(${rotation.y}deg)`,
           transition: isFetching ? 'none' : 'transform 0.2s ease-out'
         }}
-        className={cn(
-          "w-full relative transition-transform duration-300 preserve-3d",
-          isMobile && "animate-[float_6s_ease-in-out_infinite]"
-        )}
+        className="w-full relative transition-transform duration-300 preserve-3d"
       >
         <Card className={cn(
           "relative border border-white/20 bg-white/[0.03] backdrop-blur-[40px] sm:backdrop-blur-[80px] shadow-[0_0_50px_rgba(0,0,0,0.5)] sm:shadow-[0_0_80px_rgba(0,0,0,0.8)] rounded-[2rem] sm:rounded-[3rem] overflow-hidden group transition-colors duration-500",
           isMobile && "border-white/30"
         )}>
-          {/* Subtle Mobile Edge Glow */}
+          {/* Subtle Mobile Edge Sweep - No movement, just light */}
           {isMobile && (
-            <div className="absolute inset-0 border-[2px] border-primary/20 rounded-[2rem] animate-pulse pointer-events-none" />
+            <div className="absolute inset-0 opacity-40 pointer-events-none overflow-hidden rounded-[2rem]">
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full animate-[shimmer_4s_infinite]" />
+            </div>
           )}
 
           {!isMobile && (
